@@ -40,7 +40,7 @@ class kalmanFilter(object):
     
     def filter1D(self, A, B, H, initX, initP, initQ, initR, Uk):
         '''
-        This method implements barebone 1d kalaman filter. The efficiency 
+        This method implements barebone 1d kalman filter. The efficiency 
         depends on the user input of key kalman parameters.
         
         :param A: State transition matrix as type numpy matrix
@@ -86,6 +86,8 @@ class kalmanFilter(object):
     def _predictKal(self, stepUk):
         '''
         Helper method for predict phase of the filter
+        
+        :param stepUk: Control vector as matrix for the current step
         '''
         self.predStateEstimate = (self.A * self.curStateEst) + (self.B * stepUk)
         self.predErrorEstimate = (self.A * self.curProbEst * self.A.T) + self.Q 
@@ -93,6 +95,8 @@ class kalmanFilter(object):
     def _observeKal(self, measuredValue):
         '''
         Helper method for error observation phase of the filter
+        
+        :param measuredValue: measured signal value as matrix for the current step
         '''
         self.observePrediction = measuredValue - (self.H * self.predStateEstimate)
         self.observeCovariance = (self.H * self.predErrorEstimate * self.H.T) + self.R
@@ -110,10 +114,32 @@ class kalmanFilter(object):
         # Update Probability estimate        
         self.curProbEst = (Imat - self.kalmanGain * self.H) * self.predErrorEstimate
     
-    def plot1D(self):
+    def plot1D(self, xlabl="Time", ylabl="Signal", title="Kalman Filtering Plot"):
         '''
         This method plots the 1d kalman filtered object in comparison to the 
         given user signal. It also plots the error covariance.
-        '''
         
-    
+        :param xlabl: x axis label as string
+        :param ylabl: y acis label as string
+        :param title: title of the plot as string
+        '''
+        try:
+            import matplotlib.pyplot as plt
+            if hasattr(self, 'outStateEst'):
+                if hasattr(self, 'userSignal'):
+                    plt.plot(self.userTime,self.userSignal,'b',
+                             self.userTime,self.outStateEst,'k')
+                    plt.xlabel(xlabl)
+                    plt.ylabel(ylabl)
+                    plt.title(title)
+                    plt.legend(('measured','kalman filtered'))
+                    plt.show()
+                else:
+                    print "No user signal found"
+            else:
+                print "No kalman estimate calculated"
+        except:
+            raise ImportError('Matlplotlib module not found')
+        
+if __name__=="__main__":
+    pass
