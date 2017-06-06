@@ -81,7 +81,7 @@ class kalmanFilter(object):
             
             return self.outStateEst, self.outProbEst
         else:
-            print "Error: Both time and signal vector should be of the same length"
+            print ("Error: Both time and signal vector should be of the same length")
     
     def _predictKal(self, stepUk):
         '''
@@ -135,9 +135,9 @@ class kalmanFilter(object):
                     plt.legend(('measured','kalman filtered'))
                     plt.show()
                 else:
-                    print "No user signal found"
+                    print ("No user signal found")
             else:
-                print "No kalman estimate calculated"
+                print ("No kalman estimate calculated")
         except:
             raise ImportError('Matlplotlib module not found')
         
